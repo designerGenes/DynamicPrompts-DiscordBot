@@ -6,7 +6,11 @@ import argparse
 
 intents = discord.Intents.default()
 intents.message_content = True
-token = "MTE1MDgwMjk1Njc1MzU3NjEyOA.Gt0Fty.8X22eL66WFTKo7cSDQWaQaV6_BBNHgdDLJXpcI"
+
+def read_token_from_file():
+    with open("token.txt", "r") as f:
+        return f.read().strip()
+
 async def read_file(filename):
     try:
         with open(os.path.join('wildcards', f'{filename}.txt'), 'r') as f:
@@ -97,11 +101,12 @@ class MyClient(discord.Client):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run the DynamicPrompts bot")
     parser.add_argument("--test", help="Run tests instead of the bot", action="store_true")
-
+    
     args = parser.parse_args()
 
     if args.test:
         asyncio.run(test_bot())
     else:
+        token = read_token_from_file()
         client = MyClient(intents=intents)
         client.run(token)

@@ -60,7 +60,7 @@ class MyClient(discord.Client):
         print(f"We have logged in as {self.user}")
 
     async def on_message(self, message):
-        if message.author == client.user:
+        if message.author == self.user:
             return
 
         if message.content.startswith('!wildcard '):
@@ -72,15 +72,20 @@ class MyClient(discord.Client):
                 try:
                     wildcard_to_list = args[index + 1][1:-1]  # remove square brackets
                     list_values = await list_wildcard_values(wildcard_to_list)
-                    await message.channel.send(list_values)
+
+                    # Break list_values into chunks of 2000 characters each
+                    for i in range(0, len(list_values), 2000):
+                        await message.channel.send(list_values[i:i+2000])
+
                     return
                 except IndexError:
                     await message.channel.send("Please specify a wildcard after the -l flag.")
                     return
-            
+                
             formatted_string = message.content[10:]
             new_string = await replace_wildcards(formatted_string)
             await message.channel.send(new_string)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Run the DynamicPrompts bot")

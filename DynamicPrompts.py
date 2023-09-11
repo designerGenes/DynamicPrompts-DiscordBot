@@ -6,7 +6,7 @@ import argparse
 
 intents = discord.Intents.default()
 intents.message_content = True
-token = "MTE1MDgwMjk1Njc1MzU3NjEyOA.GuEfNl.x_g0Y2JH3bXYUpYqXTmuxn-tQlUnTCrbCeW7D4"
+token = "MTE1MDgwMjk1Njc1MzU3NjEyOA.Gt0Fty.8X22eL66WFTKo7cSDQWaQaV6_BBNHgdDLJXpcI"
 async def read_file(filename):
     try:
         with open(os.path.join('wildcards', f'{filename}.txt'), 'r') as f:
@@ -81,6 +81,13 @@ class MyClient(discord.Client):
                 except IndexError:
                     await message.channel.send("Please specify a wildcard after the -l flag.")
                     return
+                
+            if '-i' in args:
+                args.remove('-i')
+                formatted_string = ' '.join(args[1:])
+                new_string = await replace_wildcards(formatted_string)
+                await message.channel.send(f"/imagine prompt: {new_string}")
+                return
                 
             formatted_string = message.content[10:]
             new_string = await replace_wildcards(formatted_string)
